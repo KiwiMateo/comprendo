@@ -57,13 +57,16 @@ make_comprehension_code <- function(comprehension_call) {
 #'
 #' @param comprehension_call expression, a comprehension call
 #' @param type character, giving the type of the output
+#' @param e environment for execution
 #'
 #' @return A vector of mode `type`.
 comprehend <- function(comprehension_call,
-                       type) {
-  out <- vector(type)
-  eval(make_comprehension_code(comprehension_call))
-  out
+                       type,
+                       e) {
+  env <- new.env(parent = e)
+  env$out <- vector(type)
+  eval(make_comprehension_code(comprehension_call), envir = env)
+  env$out
 }
 
 
@@ -95,12 +98,21 @@ comprehend <- function(comprehension_call,
 #'   v(x^2 | x %in% 1:10, x %% 3 == 0)
 `.` <- function(comprehension,
                 ...,
-                type = "list") comprehend(drop(match.call(), "type"), type)
+                type = "list") {
+  e <- parent.frame()
+  comprehend(drop(match.call(), "type"), type, e)
+}
 
 #' @rdname .
 #' @export
-l <- function(comprehension, ...) comprehend(match.call(), "list")
+l <- function(comprehension, ...) {
+  e <- parent.frame()
+  comprehend(match.call(), "list", e)
+}
 
 #' @rdname .
 #' @export
-v <- function(comprehension, ...) comprehend(match.call(), "logical")
+v <- function(comprehension, ...) {
+  e <- parent.frame()
+  comprehend(match.call(), "logical", e)
+}

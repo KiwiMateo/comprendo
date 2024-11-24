@@ -4,12 +4,14 @@
 \alias{append}
 \title{Append to a vector}
 \usage{
-append(x, y)
+append(x, y, e = parent.frame())
 }
 \arguments{
 \item{x}{a vector}
 
 \item{y}{object}
+
+\item{e}{environment}
 }
 \value{
 NULL. Modifies the input vector.

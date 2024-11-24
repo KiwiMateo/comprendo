@@ -4,12 +4,14 @@
 \alias{comprehend}
 \title{Comprehension}
 \usage{
-comprehend(comprehension_call, type)
+comprehend(comprehension_call, type, e)
 }
 \arguments{
 \item{comprehension_call}{expression, a comprehension call}
 
 \item{type}{character, giving the type of the output}
+
+\item{e}{environment for execution}
 }
 \value{
 A vector of mode `type`.

@@ -2,6 +2,7 @@
 #'
 #' @param x a vector
 #' @param y object
+#' @param e environment
 #'
 #' @return NULL. Modifies the input vector.
 #'
@@ -9,10 +10,9 @@
 #'   x <- vector()
 #'   for (i in 1:10) append(x, i)
 #'   x
-append <- function(x, y) {
+append <- function(x, y, e = parent.frame()) {
   x <- substitute(x)
   y <- substitute(y)
-  e <- parent.frame()
 
   eval(substitute(x[[length(x) + 1]] <- y,
                   list(x = x, y = y)),
