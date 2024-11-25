@@ -4,10 +4,10 @@
 \alias{make_comprehension_code}
 \title{Convert comprehension call into loop code}
 \usage{
-make_comprehension_code(comprehension_call)
+make_comprehension_code(components)
 }
 \arguments{
-\item{comprehension_call}{expression, a comprehension call}
+\item{components}{output of `parse_comprehension`}
 }
 \value{
 An expression.

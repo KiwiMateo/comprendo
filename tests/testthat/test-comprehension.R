@@ -67,4 +67,10 @@ test_that("comprehension works", {
   testthat::expect_error(l(c(x, y) | x %in% 1:10, y %in% 1:10))
   testthat::expect_error(v(c(x, y) | x %in% 1:10 & y %in% 1:10))
   # ...
+
+  # scoping
+  a <- 2
+  f <- function(b) v(a * x + b | x %in% 1:10)
+  testthat::expect_equal(f(2), 2 * (1:10) + 2)
+
 })

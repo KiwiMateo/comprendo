@@ -38,11 +38,10 @@ split <- function(loop_expr,
 
 #' Convert comprehension call into loop code
 #'
-#' @param comprehension_call expression, a comprehension call
+#' @param components output of `parse_comprehension`
 #'
 #' @return An expression.
-make_comprehension_code <- function(comprehension_call) {
-  components <- parse_comprehension(comprehension_call)
+make_comprehension_code <- function(components) {
   vars <- rev(components[["vars"]])
   cll  <- loop(components, vars[1],
                call("append", as.symbol("out"), components[["calculation"]]))
@@ -50,6 +49,18 @@ make_comprehension_code <- function(comprehension_call) {
     cll <- loop(components, var, cll)
 
   cll
+}
+
+
+#' Expand comprehension variables
+#'
+#' @param vars "vars" component of output of `parse_comprehension`
+#'
+#' @return a character vector
+expand <- function(vars) {
+  mask <- grepl("^c\\(.+\\)$", vars)
+  c(vars[!mask], unlist(strsplit(sub("^c\\(", "", sub("\\)$", "", vars[mask])),
+                                 "\\s*,\\s*")))
 }
 
 
@@ -63,12 +74,15 @@ make_comprehension_code <- function(comprehension_call) {
 comprehend <- function(comprehension_call,
                        type,
                        e) {
-  env <- environment() # hack to get required variables in scope
-  for (.var in intersect(all.vars(comprehension_call), ls(envir = e)))
+  components <- parse_comprehension(comprehension_call)
+
+  env <- environment()
+  for (.var in setdiff(all.vars(comprehension_call),
+                       expand(components[["vars"]])))
     assign(.var, get(.var, envir = e), envir = env)
 
   out <- vector(type)
-  eval(make_comprehension_code(comprehension_call))
+  eval(make_comprehension_code(components))
   out
 }
 
