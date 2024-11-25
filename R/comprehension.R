@@ -63,10 +63,13 @@ make_comprehension_code <- function(comprehension_call) {
 comprehend <- function(comprehension_call,
                        type,
                        e) {
-  env <- new.env(parent = e)
-  env$out <- vector(type)
-  eval(make_comprehension_code(comprehension_call), envir = env)
-  env$out
+  env <- environment() # hack to get required variables in scope
+  for (.var in intersect(all.vars(comprehension_call), ls(envir = e)))
+    assign(.var, get(.var, envir = e), envir = env)
+
+  out <- vector(type)
+  eval(make_comprehension_code(comprehension_call))
+  out
 }
 
 
